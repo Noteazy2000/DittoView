@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Background‐Update Test</title>
+  </head>
+  <body>
+    <h1 id="counter" style="font-size: 200px;">0</h1>
+    <script>
+      let c = 0;
+      // every 2s, increment the counter text
+      setInterval(() => {
+        c += 1;
+        document.getElementById('counter').textContent = c;
+      }, 2000);
+    </script>
+  </body>
+</html>

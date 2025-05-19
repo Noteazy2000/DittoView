@@ -1,0 +1,853 @@
+/* styles.css - DittoView Themed */
+
+/* ─── CSS Variables (Theme Colors) ─────────────────────────────────────── */
+:root {
+  --ditto-content-light: #f3edf9;
+  --ditto-primary-purple: #A892C2; /* Ditto Body */
+  --ditto-dark-purple: #5C4B7C;    /* Ditto Outline / Accents */
+  --ditto-light-blue: #72C2EE;     /* Globe Highlights / Accent */
+  --ditto-dark-blue: #4A7DBF;      /* Globe Lines / Deeper Accent */
+  --ditto-bg-purple: #C5B9D4;      /* Logo Background Color */
+  --ditto-text-light: #FFFFFF;
+  --ditto-text-dark: #4A3F5E;      /* Dark purple for text on light bg */
+  --ditto-bg-light-lavender: #F8F5FC; /* Very light lavender for inputs/light areas */
+  --ditto-bg-subtle-lavender: #EAE4F2; /* Subtle hover/background */
+  --ditto-border-radius-soft: 8px;
+  --ditto-border-radius-standard: 5px;
+
+  /* Existing colors that might be reused or replaced */
+  --color-danger: #E74C3C;
+  --color-danger-hover: #C0392B;
+  --color-success: #2ECC71;
+  --color-success-hover: #27AE60;
+}
+
+/* ─── Layout & Base Styles ───────────────────────────────────────────────── */
+body {
+  margin: 0;
+  display: flex;
+  height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow: hidden;
+  background-color: var(--ditto-bg-subtle-lavender); /* Light lavender page background */
+  color: var(--ditto-text-dark);
+}
+
+
+/* ─── Sidebar ───────────────────────────────────────────────────────────── */
+#sidebar {
+  width: 250px;
+  min-width: 250px;
+  background: var(--ditto-dark-purple); /* Darker purple for contrast */
+  color: var(--ditto-text-light);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow-y: auto;
+  border-right: 2px solid var(--ditto-primary-purple); /* Accent border */
+}
+
+#sidebar ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#sidebar li {
+  padding: 13px 20px;
+  cursor: pointer;
+  user-select: none;
+  border-left: 4px solid transparent;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  color: var(--ditto-bg-subtle-lavender); /* Lighter text for nav items */
+}
+
+#sidebar li.active {
+  background: var(--ditto-primary-purple); /* Active item with primary purple */
+  border-left-color: var(--ditto-light-blue); /* Light blue accent for active */
+  color: var(--ditto-text-light);
+  font-weight: 600;
+}
+
+#sidebar li:hover:not(.active) {
+  background: var(--ditto-primary-purple);
+  opacity: 0.8;
+  color: var(--ditto-text-light);
+}
+
+#sidebar-content {
+  padding: 5px 10px 5px 10px;
+  box-sizing: border-box;
+}
+
+/* ─── Task Setup Card (Sidebar) ────────────────────────────────────────── */
+#browser-task {
+  background: rgba(255, 255, 255, 0.05); /* Subtle background within sidebar */
+  color: var(--ditto-text-light);
+  padding: 15px;
+  border-radius: var(--ditto-border-radius-soft);
+  border: 1px solid var(--ditto-primary-purple);
+}
+
+#browser-task strong {
+  display: block;
+  font-size: 1.1em;
+  color: var(--ditto-text-light);
+  text-align: center;
+  border-bottom: 1px solid var(--ditto-light-blue);
+  padding-bottom: 5px;
+}
+
+#browser-task label {
+  display: block;
+  margin: 8px 0 5px;
+  font-size: 0.9em;
+  color: var(--ditto-bg-subtle-lavender);
+}
+
+#browser-task select,
+#browser-task input[type="text"],
+#browser-task input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  font-size: 14px;
+  border-radius: var(--ditto-border-radius-standard);
+  border: 1px solid var(--ditto-primary-purple);
+  background-color: var(--ditto-bg-light-lavender);
+  color: var(--ditto-text-dark);
+}
+#browser-task select:focus,
+#browser-task input[type="text"]:focus,
+#browser-task input[type="number"]:focus {
+  outline: none;
+  border-color: var(--ditto-light-blue);
+  box-shadow: 0 0 0 2px rgba(114, 194, 238, 0.3);
+}
+
+#browser-task button,
+.view button { /* General button styling */
+  width: 100%;
+  padding: 10px 15px;
+  cursor: pointer;
+  background: var(--ditto-light-blue);
+  color: var(--ditto-text-dark);
+  font-weight: 600;
+  border: none;
+  border-radius: var(--ditto-border-radius-standard);
+  font-size: 14px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  text-align: center;
+  display: block; /* Ensure full width if not already */
+  margin-top: 10px;
+}
+#browser-task button:hover,
+.view button:hover {
+  background: var(--ditto-dark-blue);
+  color: var(--ditto-text-light);
+  transform: translateY(-1px);
+}
+/* This allows buttons within .view to not be full width if desired elsewhere */
+.view button.inline-button { /* Use class .inline-button for non-full-width view buttons */
+    display: inline-block;
+    width: auto;
+    margin-right: 8px;
+}
+
+
+/* ─── Content Views ─────────────────────────────────────────────────────── */
+#content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--ditto-primary-purple); /* Light background for content area */
+  padding: 10px; /* Padding for the overall content area */
+}
+
+.view {
+  display: none; /* Hidden by default */
+  flex-grow: 1; /* Takes up available space in #content */
+  flex-direction: column; /* Stack children vertically */
+  overflow-y: auto; /* Allows scrolling for the whole view if its content overflows */
+  padding: 15px; /* Padding inside each view */
+  box-sizing: border-box;
+  background-color: var(--ditto-text-light); /* White background for view content */
+  border-radius: var(--ditto-border-radius-soft);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.view.active {
+  display: flex; /* Show active view */
+}
+
+/* === ADDED/MODIFIED FOR PROXY LIST GRID & SCROLL === */
+/* Specific layout for the proxies view to manage form and list scrolling */
+#view-proxies {
+  /* display: flex; // Already set by .view.active */
+  /* flex-direction: column; // Already set by .view */
+  /* overflow-y: hidden; // Override general .view overflow, manage scrolling internally */
+  /* We want the view to be the overall container, internal parts will scroll */
+}
+
+.proxy-form-container {
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--ditto-bg-subtle-lavender);
+  margin-bottom: 15px;
+  flex-shrink: 0; /* Prevent this from shrinking if space is tight */
+}
+/* Ensure buttons in proxy form are not full width by default if using general .view button style */
+.proxy-form-container button {
+    display: inline-block;
+    width: auto;
+    margin-right: 8px;
+}
+
+
+.saved-proxies-section {
+  flex-grow: 1; /* Allows this section to take up remaining vertical space */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Crucial for containing the scrollable UL properly */
+  min-height: 100px; /* Give it some minimum height to show up */
+}
+
+/* Applied to ul#savedProxyLists by renderer.js */
+.proxy-list-grid {
+  list-style-type: none;
+  padding: 5px; /* Add some padding inside the scroll area */
+  margin: 0; /* Remove default ul margin */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Slightly wider boxes */
+  gap: 12px;
+
+  /* --- SCROLLING PROPERTIES --- */
+  overflow-y: auto; /* Add vertical scrollbar ONLY if content overflows */
+  flex-grow: 1; /* Allows UL to take space in its flex parent (.saved-proxies-section) */
+  /* max-height is NOT set here, it will fill its parent (.saved-proxies-section) */
+  /* and .saved-proxies-section is designed to take remaining space */
+  background-color: var(--ditto-bg-light-lavender); /* Background for the grid area */
+  border-radius: var(--ditto-border-radius-standard);
+  border: 1px solid var(--ditto-bg-subtle-lavender);
+}
+
+/* Applied to <li> elements by renderer.js */
+.proxy-list-item-box {
+  background-color: var(--ditto-text-light);
+  border: 1px solid var(--ditto-primary-purple);
+  border-radius: var(--ditto-border-radius-standard);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  min-height: 85px;
+  max-height: 85px; /* Slightly smaller min-height for boxes */
+  box-shadow: 0 1px 3px rgba(92, 75, 124, 0.15);
+  overflow: hidden;
+}
+
+.proxy-list-name {
+  font-weight: 600;
+  color: var(--ditto-text-dark);
+  margin-bottom: 6px;
+  word-break: break-all; /* Or use ellipsis for long names */
+  /* For ellipsis: */
+  /* white-space: nowrap; */
+  /* overflow: hidden; */
+  /* text-overflow: ellipsis; */
+  /* width: calc(100% - 50px); Ensure it doesn't overlap buttons if on same line, adjust if name is above */
+  width: 100%; /* If name is on its own line above buttons */
+}
+
+.list-item-buttons {
+  display: flex;
+  gap: 6px; /* Space between edit and delete buttons */
+  align-self: flex-end; /* Push button group to the right */
+  margin-top: auto; /* Push to bottom if flex-direction of parent is column */
+}
+
+/* This class is added in renderer.js when no proxies are saved */
+.empty-list-message {
+    grid-column: 1 / -1; /* Make message span all columns if grid is active */
+    text-align: center;
+    color: var(--ditto-text-dark);
+    opacity: 0.7;
+    padding: 20px;
+    font-style: italic;
+}
+/* === END OF PROXY LIST GRID & SCROLL MODIFICATIONS === */
+
+
+/* ─── Common Form Elements in Views ─────────────────────────────────── */
+.view input[type="text"],
+.view input[type="url"],
+.view input[type="number"],
+.view textarea,
+.view select { /* Added select here */
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0 12px;
+  box-sizing: border-box;
+  border: 1px solid var(--ditto-primary-purple);
+  border-radius: var(--ditto-border-radius-standard);
+  font-size: 14px;
+  background-color: var(--ditto-bg-light-lavender);
+  color: var(--ditto-text-dark);
+}
+.view input[type="text"]:focus,
+.view input[type="url"]:focus,
+.view input[type="number"]:focus,
+.view textarea:focus,
+.view select:focus {
+  outline: none;
+  border-color: var(--ditto-light-blue);
+  box-shadow: 0 0 0 2px rgba(114, 194, 238, 0.3);
+}
+
+.view textarea {
+    min-height: 80px;
+    resize: vertical; /* Allow vertical resize */
+}
+
+.view .test-webhook-btn {
+  background: var(--color-success); /* Keep success color */
+  color: var(--ditto-text-light);
+}
+.view .test-webhook-btn:hover {
+  background: var(--color-success-hover);
+}
+
+/* Settings specific styling */
+.setting-option {
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: var(--ditto-bg-subtle-lavender);
+  border-radius: var(--ditto-border-radius-standard);
+  display: flex;
+  align-items: center;
+}
+.setting-option input[type="radio"] {
+  width: auto;
+  margin-right: 10px;
+  accent-color: var(--ditto-primary-purple); /* Modern way to color radio */
+}
+.setting-option label {
+  margin-bottom: 0;
+  font-size: 14px;
+  color: var(--ditto-text-dark);
+}
+
+/* MODIFIED: General styling for lists in other views, if different from proxy grid */
+.view ul:not(.proxy-list-grid) { /* Target ULs that are NOT the proxy grid */
+  list-style: none;
+  margin: 15px 0;
+  padding: 0;
+  background-color: var(--ditto-text-light);
+  border: 1px solid var(--ditto-bg-subtle-lavender);
+  border-radius: var(--ditto-border-radius-soft);
+}
+.view ul:not(.proxy-list-grid) li { /* Target LIs in non-proxy-grid ULs */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--ditto-bg-subtle-lavender);
+  font-size: 14px;
+  color: var(--ditto-text-dark);
+}
+.view ul:not(.proxy-list-grid) li:last-child {
+    border-bottom: none;
+}
+/* Icon button styling from previous response, ensure it's here or defined globally */
+.icon-btn {
+  background: none;
+  border: none;
+  padding: 3px;
+  cursor: pointer;
+  font-size: 1.1em; /* Default for X, pencil might be larger if emoji */
+  line-height: 1;
+}
+
+/* Buttons within NON-proxy-grid list items (e.g., website list delete button) */
+.view ul:not(.proxy-list-grid) li button {
+  background: none;
+  border: none;
+  color: var(--color-danger);
+  font-size: 18px; /* For the 'X' */
+  cursor: pointer;
+  padding: 5px;
+  margin: 0;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.view ul:not(.proxy-list-grid) li button:hover {
+  background-color: rgba(231, 76, 60, 0.1);
+  color: var(--color-danger-hover);
+}
+
+/* Styles for pencil/delete icons in the proxy grid (already included from previous answers) */
+.proxy-list-grid .edit-list-btn.icon-btn {
+  color: var(--ditto-dark-blue); /* Themed edit icon */
+}
+.proxy-list-grid .edit-list-btn.icon-btn:hover {
+  color: var(--ditto-light-blue);
+}
+
+
+/* ─── Headings & Separators in Views ────────────────────────────────── */
+.view strong { /* This is h2 in your proxy/website sections */
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 12px;
+  font-size: 1.3em;
+  color: var(--ditto-dark-purple);
+  padding-bottom: 5px;
+  border-bottom: 2px solid var(--ditto-primary-purple);
+}
+.view hr {
+  margin: 25px 0;
+  border: none;
+  border-top: 1px solid var(--ditto-bg-subtle-lavender);
+}
+
+.status-message {
+    font-size: 0.9em;
+    color: var(--ditto-text-dark);
+    opacity: 0.8;
+    margin-top: 5px;
+    min-height: 1.2em;
+}
+
+/* ─── Specific Buttons (Sidebar Bottom & Clock) ──────────────────────── */
+#closeAllTabsBtn {
+  margin: 5px 10px 0px 10px;
+  padding: 10px 12px;
+  background: var(--color-danger);
+  color: var(--ditto-text-light);
+  border: none;
+  border-radius: var(--ditto-border-radius-standard);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  display: block;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+#closeAllTabsBtn:hover {
+  background: var(--color-danger-hover);
+  transform: translateY(-1px);
+}
+
+#localTimeClock {
+  text-align: center;
+  padding: 8px 10px 2px 10px; /* Adjusted padding to make space */
+  font-size: 0.75em;
+  font-weight: 500;
+}
+
+#appVersionDisplay {
+  text-align: center;
+  padding: 0px 10px 8px 10px; /* Padding below version */
+  font-size: 0.65em; /* Smaller than the clock */
+  color: var(--ditto-bg-subtle-lavender); /* A more subtle color */
+  opacity: 0.8;
+}
+
+/* ─── Minimized Tabs Dock (#view-browsers specific) ────────────────── */
+#view-browsers {
+  background-color: var(--ditto-content-light);
+}
+
+/* Your view-proxies and view-settings specific background colors were here, ensure they work with the general .view padding */
+#view-proxies, #view-settings {
+  background-color: var(--ditto-content-light); /* Ensure views have this light bg */
+}
+
+
+#minimizedTabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;  /* This aligns items to the start of the cross-axis */
+  align-content: flex-start; /* This aligns lines of items to the start if there are multiple lines */
+  gap: 12px;
+  width: 100%;
+  padding: 10px; /* Reduced padding a bit - from a previous iteration */
+  /* padding: 5px; This was in a duplicate block, I'll use the 12px from above */
+  box-sizing: border-box;
+  background: var(--ditto-content-light);
+  border-bottom: 2px solid var(--ditto-primary-purple);
+  flex-shrink: 0;
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: var(--ditto-border-radius-standard) var(--ditto-border-radius-standard) 0 0;
+}
+
+.minimized-tab-wrapper {
+  flex-grow: 0;
+  flex-shrink: 0;
+  width: 180px;
+  position: relative;
+  border: 1px solid var(--ditto-primary-purple);
+  border-radius: var(--ditto-border-radius-soft);
+  background-color: var(--ditto-text-light);
+  box-shadow: 0 2px 5px rgba(92, 75, 124, 0.2);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.minimized-tab-wrapper:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(92, 75, 124, 0.3);
+}
+
+.minimized-tab-header {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 26px;
+  background: var(--ditto-dark-purple);
+  color: var(--ditto-text-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 4px 0 10px;
+  font-size: 12px;
+  font-weight: 500;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.minimized-tab-header span { /* For the title text */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-grow: 1;
+  padding-right: 5px;
+}
+
+.minimized-tab-header .tab-status-indicator { /* Styling for Q: status */
+    font-size: 0.9em;
+    margin-left: 5px;
+    color: var(--ditto-light-blue); /* Or another distinct color */
+    white-space: nowrap;
+}
+.minimized-tab-header .tab-status-indicator.error {
+  color: var(--color-danger); /* Red for error */
+  font-weight: bold;
+}
+
+.minimized-tab-header button {
+  appearance: none;
+  background: transparent;
+  border: none;
+  padding: 0; /* Important for precise centering if width/height are fixed */
+  margin: 0;
+  color: var(--ditto-bg-subtle-lavender);
+  width: 22px;  /* Fixed width */
+  height: 22px; /* Fixed height */
+  display: flex; /* ADD THIS to use flexbox for centering content *inside* the button */
+  align-items: center; /* ADD THIS for vertical centering */
+  justify-content: center; /* ADD THIS for horizontal centering */
+  font-size: 18px; /* Size of the 'X' character */
+  font-weight: bold;
+  line-height: 1; /* Good for precise control, especially with flex */
+  cursor: pointer;
+  flex-shrink: 0;
+  border-radius: 50%;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+button.edit-list-btn.icon-btn {
+    font-size: 10px;
+    width: auto;
+    height: auto;
+    /* margin: auto; */
+    padding: 10px;
+}
+
+button.delete-list-btn.icon-btn {
+    font-size: 10px;
+    width: auto;
+    height: auto;
+    text-transform: uppercase;
+}
+
+
+.minimized-tab-img {
+  display: block;
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  cursor: pointer;
+  margin-top: 26px; /* Match header height */
+  background-color: var(--ditto-bg-light-lavender);
+}
+
+.minimized-tab-close {
+  appearance: none;
+  background: transparent;
+  border: none;
+  padding: 0; margin: 0;
+  color: var(--ditto-bg-subtle-lavender);
+  width: 22px; height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px; font-weight: bold;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  border-radius: 50%;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.minimized-tab-close:hover {
+  background-color: var(--color-danger);
+  color: var(--ditto-text-light);
+}
+
+#noTabsMessage {
+  color: var(--ditto-dark-purple);
+  /* padding: 30px; Let's reduce this or make it symmetrical if it's causing an issue */
+  padding: 20px 15px; /* Symmetrical horizontal padding */
+  text-align: center;
+  font-size: 1.1em;
+  opacity: 0.7;
+  width: 100%; /* Takes full width of parent's content box */
+  box-sizing: border-box; /* Ensures padding is included in the width/height calculation */
+  /* If it's the only item and you want to try and center it vertically in a fixed height dock: */
+  /* margin-top: auto; */ /* These might work if #minimizedTabs has a fixed height and is flex */
+  /* margin-bottom: auto; */
+}
+
+/* ─── Custom Scrollbars ────────────────────────────────────────────────── */
+#sidebar,
+.view, /* General view scrolling */
+#minimizedTabs,
+.proxy-list-grid { /* ADDED .proxy-list-grid here */
+  scrollbar-width: thin;
+  scrollbar-color: var(--ditto-primary-purple) var(--ditto-bg-subtle-lavender);
+}
+#sidebar::-webkit-scrollbar,
+.view::-webkit-scrollbar, /* General view scrolling */
+#minimizedTabs::-webkit-scrollbar,
+.proxy-list-grid::-webkit-scrollbar { /* ADDED .proxy-list-grid here */
+  width: 10px;
+  height: 10px;
+}
+#sidebar::-webkit-scrollbar-thumb,
+.view::-webkit-scrollbar-thumb, /* General view scrolling */
+#minimizedTabs::-webkit-scrollbar-thumb,
+.proxy-list-grid::-webkit-scrollbar-thumb { /* ADDED .proxy-list-grid here */
+  background: var(--ditto-primary-purple);
+  border-radius: var(--ditto-border-radius-standard);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+#sidebar::-webkit-scrollbar-thumb:hover,
+.view::-webkit-scrollbar-thumb:hover, /* General view scrolling */
+#minimizedTabs::-webkit-scrollbar-thumb:hover,
+.proxy-list-grid::-webkit-scrollbar-thumb:hover { /* ADDED .proxy-list-grid here */
+  background: var(--ditto-dark-purple);
+}
+#sidebar::-webkit-scrollbar-track,
+.view::-webkit-scrollbar-track, /* General view scrolling */
+#minimizedTabs::-webkit-scrollbar-track,
+.proxy-list-grid::-webkit-scrollbar-track { /* ADDED .proxy-list-grid here */
+  background: rgba(0,0,0,0.03);
+}
+
+/* Redundant minimizedTabs button styling, simplify or remove if .icon-btn covers it */
+/* #minimizedTabs button {
+    color: var(--ditto-text-dark);
+    padding: 5px;
+    margin: 0;
+    width: 1.3rem;
+} */
+
+/* Your duplicated .list-item-buttons and .icon-btn styles from near the end of your file are removed */
+/* as they were already defined or integrated above for the proxy list. */
+/* The .saved-proxies-section ul li styling for flex was also integrated into the box model. */
+
+/* styles.css */
+
+/* ... (other styles) ... */
+
+#cancelProxyEditBtn {
+  display: none;
+  padding: 10px 12px;
+  background: var(--color-danger);
+  color: var(--ditto-text-light);
+  border: none;
+  border-radius: var(--ditto-border-radius-standard);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  display: block;
+  transition: background-color 0.2s ease, transform 0.1s ease; /* Initially hidden */
+  /* Optional: Style to match other buttons or differentiate it */
+  /* For example, to make it look like other buttons in that form section: */
+  /* (it will already pick up some styles from '.proxy-form-container button' if you've structured HTML as above) */
+  /* You could give it a specific background color if desired: */
+  /* background-color: #6c757d; */ /* Example: A gray color */
+  /* color: var(--ditto-text-light); */
+}
+
+#cancelProxyEditBtn:hover {
+    background: var(--color-danger-hover);
+  transform: translateY(-1px);
+}
+
+/* Your existing .proxy-form-container button style will likely apply.
+   Ensure it's what you want or add more specific styles for #cancelProxyEditBtn.
+   The .proxy-form-container button style in your styles.css is:
+*/
+.proxy-form-container button { /* */
+    display: inline-block;
+    width: auto;
+    margin-right: 8px;
+}
+
+/* ... (other styles) ... */
+
+.saved-proxies-section {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; 
+  min-height: 100px; 
+}
+
+.proxy-list-grid { /* Applied to ul#savedProxyLists */
+  list-style-type: none;
+  padding: 5px;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  overflow-y: auto; 
+  flex-grow: 1; 
+  background-color: var(--ditto-bg-light-lavender);
+  border-radius: var(--ditto-border-radius-standard);
+  border: 1px solid var(--ditto-bg-subtle-lavender);
+}
+
+/* styles.css */
+
+/* ... (your existing styles) ... */
+
+/* === Toast Notifications === */
+#toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1050; /* Ensure it's above most other content */
+  display: flex;
+  flex-direction: column-reverse; /* New toasts appear above older ones if stacked */
+  gap: 10px; /* Space between toasts */
+  max-width: 350px; /* Optional: constrain width */
+}
+
+.toast {
+  background-color: var(--ditto-dark-purple); /* Default background */
+  color: var(--ditto-text-light);
+  padding: 12px 18px;
+  border-radius: var(--ditto-border-radius-standard);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  opacity: 0;
+  transform: translateX(calc(100% + 20px)); /* Start off-screen (20px is the 'right' offset) */
+  transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+  cursor: pointer; /* Indicates it's clickable to dismiss */
+  font-size: 0.9em;
+  line-height: 1.4;
+  display: flex; /* For potential icon + text layout later */
+  align-items: center;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Toast Types - using your theme colors */
+.toast.success {
+  background-color: var(--color-success);
+  color: var(--ditto-text-light);
+  border-left: 5px solid var(--color-success-hover); /* Accent border */
+}
+
+.toast.error {
+  background-color: var(--color-danger);
+  color: var(--ditto-text-light);
+  border-left: 5px solid var(--color-danger-hover); /* Accent border */
+}
+
+.toast.info {
+  background-color: var(--ditto-light-blue);
+  color: var(--ditto-text-dark); /* Dark text for light blue background */
+  border-left: 5px solid var(--ditto-dark-blue); /* Accent border */
+}
+
+
+.toast .toast-progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 100%;
+  background-color: rgba(255,255,255,0.3);
+  animation: toast-progress-animation linear;
+}
+
+@keyframes toast-progress-animation {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+/* styles.css */
+
+/* ... (your existing .icon-btn styles might provide a base) ... */
+/* .icon-btn {
+  background: none;
+  border: none;
+  padding: 3px; 
+  cursor: pointer;
+  font-size: 1.1em; 
+  line-height: 1;
+} */
+
+/* Specific styling for the proxy list delete button to accommodate SVG */
+.proxy-list-grid .delete-list-btn.icon-btn {
+  background: var(--color-danger);
+  border: none;
+  padding: 2px; /* Adjust padding around the SVG if needed */
+  cursor: pointer;
+  
+  /* Ensure the button itself is a flex container to center the SVG */
+  display: inline-flex; 
+  align-items: center;
+  justify-content: center;
+  
+  /* Define explicit width and height for the button */
+  width: 30px;  /* Example size, adjust as needed */
+  height: 30px; /* Example size, adjust as needed */
+  border-radius: 4px; /* Optional: if you want a slightly rounded button box */
+}
+
+.proxy-list-grid .delete-list-btn.icon-btn:hover {
+  background-color: var(--color-danger-hover); /* Optional: slight background on hover */
+}
+
+/* Styling for the SVG icon itself */
+.proxy-list-grid .delete-list-btn.icon-btn .proxy-delete-icon-svg {
+  width: 16px;  /* Adjust SVG icon size as desired */
+  height: 16px; /* Adjust SVG icon size as desired */
+  display: block; /* Good practice for SVGs to remove extra space */
+  stroke-width: 2; /* You can adjust this if the SVG doesn't specify it or you want to override */
+}

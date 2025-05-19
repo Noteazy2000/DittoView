@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <title>DittoView</title> <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="sidebar">
+    <ul>
+      <li data-view="browsers" class="active">Browsers</li>
+      <li data-view="proxies">Proxies</li>
+      <li data-view="settings">Settings</li>
+    </ul>
+
+    <div id="sidebar-content">
+      <div id="browser-task">
+        <strong>Browser Task Setup</strong>
+        <label for="browserNameInput">Browser Name Prefix</label>
+        <input type="text" id="browserNameInput" placeholder="e.g. Bot">
+        <label for="proxyListDropdown">Proxy List</label>
+        <select id="proxyListDropdown"><option value="">-- Select a Proxy List --</option></select>
+        <label for="websiteListDropdown">Website List</label>
+        <select id="websiteListDropdown"><option value="">-- Select a Website --</option><option value="https://www.amazon.com/">Amazon (Default)</option><option value="https://www.bestbuy.com/">BestBuy (Default)</option><option value="https://www.costco.com/">Costco (Default)</option><option value="https://www.gamestop.com/">GameStop (Default)</option><option value="https://www.pokemoncenter.com/">Pokemon Center (Default)</option><option value="https://www.target.com/">Target (Default)</option><option value="https://www.walmart.com/">Walmart (Default)</option></select>
+        <label for="tabCount">Number of Tabs</label>
+        <input type="number" id="tabCount" min="1" value="1">
+        <button id="launchTaskBtn">Launch Browsers</button>
+      </div>
+    </div>
+    <button id="closeAllTabsBtn" class="close-all">Close All Tabs</button>
+        <div id="localTimeClock">May 18, 2025 07:51:13 PM</div>
+  </div>
+
+  <div id="content">
+    <div id="view-browsers" class="view active">
+      <div id="minimizedTabs">
+        </div>
+      <div id="noTabsMessage" style="display: block; text-align: center; padding: 20px; color: #777;">
+        No browser tabs are currently open or minimized. Launch a new task from the sidebar.
+      </div>
+    </div>
+
+    <div id="view-proxies" class="view">
+      <strong>Edit &amp; Save Proxy Lists</strong>
+      <textarea id="proxyList" rows="10" placeholder="host:port:user:pass (one per line)"></textarea>
+      <input type="text" id="proxyListName" placeholder="List name">
+      <button id="saveProxyListBtn">Save This List</button>
+      <button id="cancelProxyEditBtn" style="display: none;">Cancel Edit</button>
+      <p id="proxyFormStatus" class="status-message"></p>
+      <strong>Saved Proxy Lists</strong>
+      <ul id="savedProxyLists" class="proxy-list-grid"><p class="empty-list-message">No proxy lists saved yet.</p></ul>
+    </div>
+
+    <div id="view-settings" class="view">
+      <strong>Add a Website</strong>
+      <input type="text" id="newWebsiteNameInput" placeholder="Site name">
+      <input type="url" id="newWebsiteInput" placeholder="https://example.com">
+      <button id="addWebsiteBtn">Add Website</button>
+      <hr>
+      <strong>Saved Websites</strong>
+      <ul id="savedWebsitesList"></ul>
+      
+      <hr>
+      <strong>Minimized Tab Thumbnails</strong>
+      <div class="setting-option">
+          <input type="radio" id="thumbnailStrategyInitial" disabled="" name="thumbnailUpdateStrategy" value="initial" checked="">
+          <label for="thumbnailStrategyInitial">Initial Only (Capture once on tab open)</label>
+      </div>
+      <div class="setting-option">
+          <input type="radio" id="thumbnailStrategyStatic" name="thumbnailUpdateStrategy" value="static">
+          <label for="thumbnailStrategyStatic">Static on Minimize (Capture once when minimized)</label>
+      </div>
+      <div class="setting-option">
+          <input type="radio" id="thumbnailStrategyLiveFast" disabled="" name="thumbnailUpdateStrategy" value="live-fast">
+          <label for="thumbnailStrategyLiveFast">Live View: Fast Updates (every 5 seconds)</label>
+      </div>
+      <div class="setting-option">
+          <input type="radio" id="thumbnailStrategyLiveSlow" disabled="" name="thumbnailUpdateStrategy" value="live-slow">
+          <label for="thumbnailStrategyLiveSlow">Live View: Slow Updates (every 20 seconds)</label>
+      </div>
+      <div class="setting-option">
+          <input type="radio" id="thumbnailStrategyEventDriven" disabled="" name="thumbnailUpdateStrategy" value="event-driven">
+          <label for="thumbnailStrategyEventDriven">Live View: Event-Driven (On page change/nav/reload)</label>
+      </div>
+      <button id="saveThumbnailStrategyBtn">Save Thumbnail Setting</button>
+      <p id="thumbnailStrategyStatus" class="status-message"></p>
+      <hr>
+      
+
+      <label for="queueIntervalInput">Queue Poll Interval (ms)</label>
+      <input type="number" id="queueIntervalInput" placeholder="e.g. 5000" min="1000">
+      <button id="saveQueueIntervalBtn">Save Interval</button>
+      <p id="queueIntervalStatus" class="status-message"></p>
+      <hr>
+
+      <strong>Discord Webhook</strong>
+      <input type="url" id="webhookUrlInput" placeholder="Webhook URL">
+      <button id="saveWebhookBtn">Save Webhook</button>
+      <button id="testWebhookBtn" class="test-webhook-btn">Test Webhook</button>
+      <p id="webhookStatus" class="status-message"></p>
+    </div>
+
+    <div id="toast-container"></div>
+
+
+
+  </div>
+  <script src="renderer.js"></script>
+
+</body></html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Browser Tab</title> <link rel="stylesheet" href="browser-view.css">
+</head>
+<body>
+    <div id="navigation-bar">
+        <button id="back-button" title="Back" disabled>&larr;</button>
+        <button id="forward-button" title="Forward" disabled>&rarr;</button>
+        <button id="reload-button" title="Reload">&#x21bb;</button>
+        <input type="text" id="url-input" placeholder="Enter URL and press Enter">
+    </div>
+    <webview id="content-webview" src="about:blank" preload="./preload.js"></webview>
+
+    <script src="browser-view-renderer.js"></script>
+</body>
+</html>
