@@ -1,6 +1,6 @@
 {
   "name": "dittoview",
-  "version": "0.1.1-beta",
+  "version": "0.1.0-beta",
   "description": "DittoView - Your solution to all queue problems.",
   "main": "main.js",
   "author": "NOTEAZY L.L.C.",
@@ -100,7 +100,8 @@
       {
         "provider": "github",
         "owner": "Noteazy2000",
-        "repo": "DittoView"
+        "repo": "DittoView",
+        "releaseType": "prerelease"
       }
     ]
   }
