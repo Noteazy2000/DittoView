@@ -212,8 +212,9 @@ window.addEventListener('DOMContentLoaded', () => {
     dock: document.getElementById('minimizedTabs'),
     noTabsMessage: document.getElementById('noTabsMessage'),
     localTimeClock: document.getElementById('localTimeClock'),
-    appVersionDisplay: document.getElementById('appVersionDisplay') 
-  };
+    appVersionDisplay: document.getElementById('appVersionDisplay'),
+    updateStatusDisplay: document.getElementById('updateStatusDisplay')
+    };
   // console.log('[Renderer.js] Refs initialized. Checking key settings and proxy refs:');
   // ... (console logs for refs can be kept or removed)
 
@@ -452,12 +453,56 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
   // 6) Event listeners
-    ipcRenderer.on('app-version', (event, arg) => {
+  ipcRenderer.on('app-version', (event, arg) => {
     console.log(`[Renderer.js] Received app-version: ${arg.version}`);
     if (refs.appVersionDisplay) {
       refs.appVersionDisplay.textContent = `v${arg.version}`;
     }
   });
+
+// NEW BLOCK TO REPLACE THE OLD ONE:
+ipcRenderer.on('update-message', (event, arg) => {
+  console.log(`[Renderer.js] Received update-message:`, arg);
+  if (refs.updateStatusDisplay) {
+    if (arg.text && arg.text.trim() !== '') {
+      refs.updateStatusDisplay.textContent = arg.text;
+      refs.updateStatusDisplay.classList.add('visible'); // Make it visible
+      if (arg.isError) {
+        refs.updateStatusDisplay.classList.add('error');
+      } else {
+        refs.updateStatusDisplay.classList.remove('error');
+      }
+
+      // Auto-hide logic (optional, but good for non-persistent messages)
+      // Only auto-hide if it's not a persistent "Update ready" or "downloaded" message
+      if (!arg.text.toLowerCase().includes("ready") && !arg.text.toLowerCase().includes("downloaded")) {
+        setTimeout(() => {
+          // Check if the message is still the same one we set, to avoid hiding a newer message
+          if (refs.updateStatusDisplay && refs.updateStatusDisplay.textContent === arg.text) { 
+            refs.updateStatusDisplay.classList.remove('visible');
+            // Optional: A small delay before setting textContent to '' to allow fade out
+            // This delay should match your CSS transition duration for opacity (e.g., 300ms)
+            setTimeout(() => {
+                if (refs.updateStatusDisplay && !refs.updateStatusDisplay.classList.contains('visible')) { // Check again if it wasn't made visible by another message in the interim
+                    refs.updateStatusDisplay.textContent = '';
+                    refs.updateStatusDisplay.classList.remove('error');
+                }
+            }, 300); 
+          }
+        }, 7000); // Display these messages for 7 seconds before auto-hiding
+      }
+    } else {
+      // If arg.text is empty or just whitespace, hide it
+      refs.updateStatusDisplay.classList.remove('visible');
+      setTimeout(() => {
+          if (refs.updateStatusDisplay && !refs.updateStatusDisplay.classList.contains('visible')) {
+              refs.updateStatusDisplay.textContent = '';
+              refs.updateStatusDisplay.classList.remove('error');
+          }
+      }, 300); // Delay matches CSS transition
+    }
+  }
+});
   // console.log('[Renderer.js] Setting up event listeners...');
 
   // Proxy Form Cancel Button Listener

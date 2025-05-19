@@ -1,6 +1,6 @@
 {
   "name": "dittoview",
-  "version": "0.1.1-beta",
+  "version": "0.1.2-beta",
   "description": "DittoView - Your solution to all queue problems.",
   "main": "main.js",
   "author": "NOTEAZY L.L.C.",
@@ -16,6 +16,7 @@
     "publish": "electron-builder --publish always"
   },
   "dependencies": {
+    "electron-log": "^5.4.0",
     "electron-updater": "^6.1.8"
   },
   "devDependencies": {

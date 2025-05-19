@@ -3,8 +3,10 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // 1) MODULE IMPORTS & GLOBALS
 // ─────────────────────────────────────────────────────────────────────────────
-const { app, BrowserWindow, ipcMain, session } = require('electron');
+const { app, BrowserWindow, ipcMain, session, dialog } = require('electron');
 const path = require('path');
+const { autoUpdater } = require('electron-updater');
+const log = require('electron-log'); // For logging update process
 
 let mainWindow;
 const popouts = new Map(); // Stores { popoutWindow, liveThumbnailIntervalId, captureFailures, initialTargetUrl, initialThumbnail, lastNotifiedUrl, currentEffectiveStrategy }
@@ -25,9 +27,25 @@ const DEGRADE_LIVE_FAST_THRESHOLD = 3; // If MINIMIZED popouts.size > this, 'liv
 
 console.log('[main.js] Initializing...');
 
+// --- AutoUpdater Logging Configuration ---
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info'; // Log to file
+log.info('App starting...'); // Initial log for this file
+// -----------------------------------------
+
 // ─────────────────────────────────────────────────────────────────────────────
 // 2) HELPER FUNCTIONS (Thumbnail Management)
 // ─────────────────────────────────────────────────────────────────────────────
+
+// (NEW HELPER FUNCTION)
+function sendStatusToWindow(channel, data) {
+  log.info(`IPC Send: ${channel}`, data); // Use electron-log
+  if (mainWindow && mainWindow.webContents && !mainWindow.webContents.isDestroyed()) {
+    mainWindow.webContents.send(channel, data);
+  } else {
+    log.warn(`IPC Send Aborted: MainWindow or webContents not available for channel ${channel}`);
+  }
+}
 
 const captureAndSendThumbnail = async (tabId, tabDetail) => {
     // console.log(`[CAPTURE ENTER] Tab ${tabId} attempting capture. Strategy: ${tabDetail?.currentEffectiveStrategy}`);
@@ -211,6 +229,8 @@ function evaluateAndApplyGlobalThumbnailStrategy() {
 // 3) IPC HANDLERS 
 // ─────────────────────────────────────────────────────────────────────────────
 
+
+
 ipcMain.on('update-thumbnail-strategy', (event, strategy) => {
     console.log(`[SETTINGS] User changed thumbnail strategy to: ${strategy}`);
     // **** ADD 'event-driven' to valid strategies from UI ****
@@ -344,7 +364,7 @@ ipcMain.on('queue-pos', (e, { tabId, pos, fullResponse }) => {
 // ─────────────────────────────────────────────────────────────────────────────
 function createWindow() {
     mainWindow = new BrowserWindow({
-        width: 1100, height: 720,
+        width: 1100, height: 730,
         minWidth: 900, minHeight: 600,
         icon: path.join(__dirname, 'assets/icon.png'),
         webPreferences: { 
@@ -356,7 +376,10 @@ function createWindow() {
     mainWindow.loadFile('index.html');
     // mainWindow.webContents.openDevTools();
         mainWindow.webContents.on('did-finish-load', () => {
-        console.log('[main.js] mainWindow did-finish-load, sending app-version.');
+            log.info('[main.js] mainWindow did-finish-load.');
+            sendStatusToWindow('app-version', { version: app.getVersion() });
+            log.info('[main.js] Checking for updates after did-finish-load...');
+            autoUpdater.checkForUpdatesAndNotify(); 
         mainWindow.webContents.send('app-version', { version: app.getVersion() });
     });
 }
@@ -373,6 +396,54 @@ app.whenReady().then(() => {
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit();
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// X) AUTO-UPDATER EVENT LISTENERS (NEW SECTION)
+// ─────────────────────────────────────────────────────────────────────────────
+autoUpdater.on('checking-for-update', () => {
+  sendStatusToWindow('update-message', { text: 'Checking for updates...' });
+});
+
+autoUpdater.on('update-available', (info) => {
+  sendStatusToWindow('update-message', { text: `Update available (v${info.version}). Downloading...` });
+});
+
+autoUpdater.on('update-not-available', (info) => {
+  sendStatusToWindow('update-message', { text: 'You are on the latest version.' });
+  setTimeout(() => {
+    if (mainWindow && !mainWindow.isDestroyed()) {
+        sendStatusToWindow('update-message', { text: '' });
+    }
+  }, 7000);
+});
+
+autoUpdater.on('error', (err) => {
+  sendStatusToWindow('update-message', { text: `Update error: ${err.message}`, isError: true });
+});
+
+autoUpdater.on('download-progress', (progressObj) => {
+  const percent = progressObj.percent != null ? progressObj.percent.toFixed(2) : 'N/A';
+  sendStatusToWindow('update-message', { text: `Downloading: ${percent}%` });
+});
+
+autoUpdater.on('update-downloaded', (info) => {
+  sendStatusToWindow('update-message', { text: `Update v${info.version} ready. Restart to install.` });
+  dialog.showMessageBox(mainWindow, {
+    type: 'info',
+    title: 'Update Ready to Install',
+    message: `Version ${info.version} has been downloaded. Restart DittoView to apply the update?`,
+    buttons: ['Restart Now', 'Later'],
+    defaultId: 0,
+    cancelId: 1
+  }).then(result => {
+    if (result.response === 0) {
+      log.info('[AutoUpdater] User chose to restart. Quitting and installing...');
+      autoUpdater.quitAndInstall();
+    } else {
+      log.info('[AutoUpdater] User chose to install update later.');
+    }
+  });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────

@@ -851,3 +851,39 @@ button.delete-list-btn.icon-btn {
   display: block; /* Good practice for SVGs to remove extra space */
   stroke-width: 2; /* You can adjust this if the SVG doesn't specify it or you want to override */
 }
+
+/* styles.css */
+
+/* ... your existing styles ... */
+
+#appVersionDisplay {
+  text-align: center;
+  padding: 0px 10px 2px 10px; /* Adjusted to make space for update status if it appears */
+  font-size: 0.65em;
+  color: var(--ditto-bg-subtle-lavender);
+  opacity: 0.8;
+}
+
+#updateStatusDisplay {
+  text-align: center;
+  padding: 2px 10px 8px 10px; /* Give it some padding when visible */
+  font-size: 0.60em;
+  color: var(--ditto-light-blue);
+  min-height: 1em; /* Still useful to prevent layout jump when text appears briefly */
+  font-style: italic;
+  display: none; /* Initially hidden */
+  opacity: 0;    /* Start transparent for transition */
+  transition: opacity 0.3s ease-in-out, display 0s linear 0.3s; /* Fade then hide */
+  /* The display transition is to ensure it doesn't take space after fading */
+}
+
+#updateStatusDisplay.visible { /* Class to make it visible */
+  display: block; /* Or 'inline' or 'flex' depending on desired layout when visible */
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out; /* Fade in */
+}
+
+#updateStatusDisplay.error {
+  color: var(--color-danger);
+  font-weight: bold;
+}
