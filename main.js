@@ -427,23 +427,44 @@ autoUpdater.on('download-progress', (progressObj) => {
   sendStatusToWindow('update-message', { text: `Downloading: ${percent}%` });
 });
 
+// main.js
 autoUpdater.on('update-downloaded', (info) => {
   sendStatusToWindow('update-message', { text: `Update v${info.version} ready. Restart to install.` });
-  dialog.showMessageBox(mainWindow, {
-    type: 'info',
-    title: 'Update Ready to Install',
-    message: `Version ${info.version} has been downloaded. Restart DittoView to apply the update?`,
-    buttons: ['Restart Now', 'Later'],
-    defaultId: 0,
-    cancelId: 1
-  }).then(result => {
-    if (result.response === 0) {
-      log.info('[AutoUpdater] User chose to restart. Quitting and installing...');
-      autoUpdater.quitAndInstall();
-    } else {
-      log.info('[AutoUpdater] User chose to install update later.');
-    }
-  });
+  
+  if (mainWindow && !mainWindow.isDestroyed()) { // Check if mainWindow exists
+    dialog.showMessageBox(mainWindow, { // Pass mainWindow as parent
+      type: 'info',
+      title: 'Update Ready to Install',
+      message: `Version ${info.version} has been downloaded. Restart DittoView to apply the update?`,
+      buttons: ['Restart Now', 'Later'],
+      defaultId: 0, // "Restart Now" is the default button
+      cancelId: 1   // "Later" is the cancel button
+    }).then(result => {
+      if (result.response === 0) { // User clicked "Restart Now"
+        log.info('[AutoUpdater] User chose to restart. Quitting and installing...');
+        autoUpdater.quitAndInstall();
+      } else { // User clicked "Later" or closed the dialog
+        log.info('[AutoUpdater] User chose to install update later.');
+        // Explicitly try to refocus the main window after the native dialog closes
+        if (mainWindow && !mainWindow.isDestroyed()) {
+          if (mainWindow.isMinimized()) {
+            mainWindow.restore();
+          }
+          mainWindow.focus(); // Focus the window itself
+          // mainWindow.webContents.focus(); // Optionally try this too
+          
+          // Consider sending an IPC to renderer if a specific element there needs focus
+          // mainWindow.webContents.send('focus-default-element');
+        }
+      }
+    }).catch(err => {
+        log.error('[AutoUpdater] Error showing update downloaded dialog:', err);
+    });
+  } else {
+    log.warn('[AutoUpdater] mainWindow not available to show update downloaded dialog.');
+    // Fallback or just log if no window to show dialog on
+    // You could potentially use a system notification as a fallback if no window is active
+  }
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
